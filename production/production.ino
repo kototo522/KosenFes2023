@@ -7,6 +7,11 @@
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 100;
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
 
+int BUTTON1 = 13;
+int BUTTON2 = 0;
+int BUTTON3 = 0;
+int BUTTON4 = 0;
+
 void setup(void)
 {
   Serial.begin(115200);
@@ -41,8 +46,14 @@ void loop(void)
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
 
-  //表示順スイッチオンオフ(13)
-  ( digitalRead(13) == HIGH ) ? Serial.println("1") : Serial.println("0");
+  //表示順スイッチオンオフ(BUTTON1 == 13)
+  ( digitalRead(BUTTON1) == HIGH ) ? Serial.println("1,") : Serial.println("0,");
+  //表示順スイッチオンオフ(BUTTON2 == 0)
+  ( digitalRead(BUTTON2) == HIGH ) ? Serial.println("1,") : Serial.println("0,");
+  //表示順スイッチオンオフ(BUTTON3 == 0)
+  ( digitalRead(BUTTON3) == HIGH ) ? Serial.println("1,") : Serial.println("0,");
+  //表示順スイッチオンオフ(BUTTON4 == 0)
+  ( digitalRead(BUTTON4) == HIGH ) ? Serial.println("1") : Serial.println("0");
 
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
