@@ -8,16 +8,16 @@ uint16_t BNO055_SAMPLERATE_DELAY_MS = 100;
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
 
 int BUTTON1 = 13;
-int BUTTON2 = 0;
-int BUTTON3 = 0;
-int BUTTON4 = 0;
+int BUTTON2 = 9;
+int BUTTON3 = 8;
 
 void setup(void)
 {
   Serial.begin(115200);
 
-  pinMode(12,INPUT);
-  pinMode(13,INPUT);
+  pinMode(BUTTON1,INPUT);
+  pinMode(BUTTON2,INPUT);
+  pinMode(BUTTON3,INPUT);
 
   while (!Serial) delay(10);  // wait for serial port to open!
 
@@ -36,24 +36,20 @@ void setup(void)
 
 void loop(void)
 {
-  sensors_event_t orientationData , angVelocityData , linearAccelData, magnetometerData, accelerometerData, gravityData;
+  sensors_event_t orientationData;
   bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);//表示順orientationのx方向(0),y方向(1),z方向(2)
-  bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);//表示順linearaccelerometerのx線形加速度(3),y線形加速度(4),z線形加速度(5)
  
   printEvent(&orientationData);
-  printEvent(&linearAccelData);
  
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
 
   //表示順スイッチオンオフ(BUTTON1 == 13)
-  ( digitalRead(BUTTON1) == HIGH ) ? Serial.println("1,") : Serial.println("0,");
+  ( digitalRead(BUTTON1) == HIGH ) ? Serial.print("1,") : Serial.print("0,");
   //表示順スイッチオンオフ(BUTTON2 == 0)
-  ( digitalRead(BUTTON2) == HIGH ) ? Serial.println("1,") : Serial.println("0,");
+  ( digitalRead(BUTTON2) == HIGH ) ? Serial.print("1,") : Serial.print("0,");
   //表示順スイッチオンオフ(BUTTON3 == 0)
-  ( digitalRead(BUTTON3) == HIGH ) ? Serial.println("1,") : Serial.println("0,");
-  //表示順スイッチオンオフ(BUTTON4 == 0)
-  ( digitalRead(BUTTON4) == HIGH ) ? Serial.println("1") : Serial.println("0");
+  ( digitalRead(BUTTON3) == HIGH ) ? Serial.println("1") : Serial.println("0");
 
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
@@ -65,12 +61,7 @@ void printEvent(sensors_event_t* event) {
     x = event->orientation.x;
     y = event->orientation.y;
     z = event->orientation.z;
-  }
-  else if (event->type == SENSOR_TYPE_LINEAR_ACCELERATION) {
-    //Serial.print("Linear:");
-    x = event->acceleration.x;
-    y = event->acceleration.y;
-    z = event->acceleration.z;
+    
   }
   Serial.print(x);
   Serial.print(",");
