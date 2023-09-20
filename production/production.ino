@@ -23,11 +23,9 @@ void setup(void)
 
   Serial.println("Orientation Sensor Test"); Serial.println("");
 
-  /* Initialise the sensor */
+  /* エラー処理 */
   if (!bno.begin())
-  {
-    /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+  {Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while (1);
   }
 
@@ -44,11 +42,9 @@ void loop(void)
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
 
-  //表示順スイッチオンオフ(BUTTON1 == 13)
+  //表示順スイッチオンオフ
   ( digitalRead(BUTTON1) == HIGH ) ? Serial.print("1,") : Serial.print("0,");
-  //表示順スイッチオンオフ(BUTTON2 == 0)
   ( digitalRead(BUTTON2) == HIGH ) ? Serial.print("1,") : Serial.print("0,");
-  //表示順スイッチオンオフ(BUTTON3 == 0)
   ( digitalRead(BUTTON3) == HIGH ) ? Serial.println("1") : Serial.println("0");
 
   delay(BNO055_SAMPLERATE_DELAY_MS);
@@ -56,12 +52,11 @@ void loop(void)
 
 void printEvent(sensors_event_t* event) {
   double x = -1000000, y = -1000000 , z = -1000000;
+  // Orient
   if (event->type == SENSOR_TYPE_ORIENTATION) {
-    //Serial.print("Orient:");
     x = event->orientation.x;
     y = event->orientation.y;
     z = event->orientation.z;
-    
   }
   Serial.print(x);
   Serial.print(",");
