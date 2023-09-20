@@ -4,13 +4,13 @@
 #include <utility/imumaths.h>
 #include <RunningMedian.h>
 
+#define BUTTON1 13
+#define BUTTON2 9
+#define BUTTON3 8
+
 /* Set the delay between fresh samples */
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 100;
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
-
-int BUTTON1 = 13;
-int BUTTON2 = 9;
-int BUTTON3 = 8;
 
 // 中央値を計算するためのRunningMedianオブジェクト
 RunningMedian x_median(10);
