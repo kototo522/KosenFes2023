@@ -1,24 +1,15 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
-#include <utility/imumaths.h>
-#include <RunningMedian.h>
 
-#define BUTTON1 13
+#define BUTTON1 5
 #define BUTTON2 9
 #define BUTTON3 8
 
-/* Set the delay between fresh samples */
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 100;
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
 
-// 中央値を計算するためのRunningMedianオブジェクト
-RunningMedian x_median(10);
-RunningMedian y_median(10);
-RunningMedian z_median(10);
-
-void setup(void)
-{
+void setup(void) {
   Serial.begin(115200);
 
   pinMode(BUTTON1, INPUT);
@@ -26,14 +17,12 @@ void setup(void)
   pinMode(BUTTON3, INPUT);
 
   while (!Serial)
-    delay(10); // wait for serial port to open!
+    delay(10);
 
   Serial.println("Orientation Sensor Test");
   Serial.println("");
 
-  /* エラー処理 */
-  if (!bno.begin())
-  {
+  if (!bno.begin()) {
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while (1);
   }
@@ -41,23 +30,24 @@ void setup(void)
   delay(1000);
 }
 
-void loop(void)
-{
+float filteredX, filteredY, filteredZ;
+
+void loop(void) {
   sensors_event_t orientationData;
   bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
 
-  x_median.add(orientationData.orientation.x); // データをRunningMedianに追加
-  y_median.add(orientationData.orientation.y);
-  z_median.add(orientationData.orientation.z);
+  // フィルタリングするデータとしてorientationDataを使用
+  filteredX = orientationData.orientation.x;
+  filteredY = orientationData.orientation.y;
+  filteredZ = orientationData.orientation.z;
 
-  Serial.print(x_median.getMedian());
+  Serial.print(filteredX);
   Serial.print(",");
-  Serial.print(y_median.getMedian());
+  Serial.print(filteredY);
   Serial.print(",");
-  Serial.print(z_median.getMedian());
+  Serial.print(filteredZ);
   Serial.print(",");
 
-  // スイッチの状態を表示
   (digitalRead(BUTTON1) == HIGH) ? Serial.print("1,") : Serial.print("0,");
   (digitalRead(BUTTON2) == HIGH) ? Serial.print("1,") : Serial.print("0,");
   (digitalRead(BUTTON3) == HIGH) ? Serial.println("1") : Serial.println("0");
