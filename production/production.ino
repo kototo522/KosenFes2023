@@ -48,6 +48,7 @@ void loop(void) {
   Serial.print(filteredZ);
   Serial.print(",");
 
+  delay(10)
   (digitalRead(BUTTON1) == HIGH) ? Serial.print("1,") : Serial.print("0,");
   (digitalRead(BUTTON2) == HIGH) ? Serial.print("1,") : Serial.print("0,");
   (digitalRead(BUTTON3) == HIGH) ? Serial.println("1") : Serial.println("0");
